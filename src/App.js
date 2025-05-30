@@ -77,9 +77,17 @@ const PickleballTracker = () => {
       }
     };
 
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && showAddDropdown) {
+        setShowAddDropdown(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, [showAddDropdown]);
 
@@ -897,7 +905,7 @@ const PickleballTracker = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white shadow-sm border-b border-gray-200 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-3">
@@ -919,7 +927,7 @@ const PickleballTracker = () => {
               </button>
               
               {showAddDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                   <div className="py-2">
                     <button
                       onClick={() => {
@@ -962,9 +970,9 @@ const PickleballTracker = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200">
+      <nav className="bg-white border-b border-gray-200 relative z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-1">
+          <div className="flex space-x-1 py-2">
             {[
               { id: 'dashboard', label: 'Dashboard', icon: Home },
               { id: 'tournaments', label: 'Tournaments', icon: Calendar },
