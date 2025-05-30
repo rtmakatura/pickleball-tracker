@@ -12,7 +12,6 @@ const PickleballTracker = () => {
   const [eventType, setEventType] = useState('tournament');
   const [editingEvent, setEditingEvent] = useState(null);
   const [editingMember, setEditingMember] = useState(null);
-  const [showAddDropdown, setShowAddDropdown] = useState(false);
 
   // Load sample data on initial render
   useEffect(() => {
@@ -74,28 +73,6 @@ const PickleballTracker = () => {
     setTournaments(sampleTournaments);
     setLeagues(sampleLeagues);
   }, []);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showAddDropdown && !event.target.closest('.relative')) {
-        setShowAddDropdown(false);
-      }
-    };
-
-    const handleEscape = (event) => {
-      if (event.key === 'Escape' && showAddDropdown) {
-        setShowAddDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [showAddDropdown]);
 
   // Helper functions
   const getMemberName = (memberId) => {
@@ -996,79 +973,84 @@ const PickleballTracker = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm">
-                <Trophy className="h-6 w-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">Pickleball Tracker</h1>
-            </div>
-            <div className="relative">
-              <button
-                onClick={() => setShowAddDropdown(!showAddDropdown)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 font-medium shadow-sm"
-              >
-                <Plus className="h-4 w-4" />
-                Add New
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {showAddDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                  <div className="py-2">
-                    <button
-                      onClick={() => {
-                        setShowMemberModal(true);
-                        setShowAddDropdown(false);
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      <Users className="h-4 w-4 text-emerald-600" />
-                      Add Member
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEventType('tournament');
-                        setShowEventModal(true);
-                        setShowAddDropdown(false);
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      <Calendar className="h-4 w-4 text-blue-600" />
-                      Add Tournament
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEventType('league');
-                        setShowEventModal(true);
-                        setShowAddDropdown(false);
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      <Trophy className="h-4 w-4 text-purple-600" />
-                      Add League
-                    </button>
-                  </div>
+      <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-white/5 rounded-full blur-2xl"></div>
+                          <div className="absolute top-1/2 right-1/4 w-48 h-48 bg-yellow-300/20 rounded-full blur-xl animate-bounce"></div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-6">
+            <div className="flex items-center gap-4">
+              {/* Animated logo */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/20 rounded-2xl blur-md"></div>
+                <div className="relative p-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
+                  <Trophy className="h-8 w-8 text-white drop-shadow-lg" />
                 </div>
-              )}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+              </div>
+              
+              {/* Title with modern typography */}
+              <div>
+                <h1 className="text-3xl font-bold text-white drop-shadow-lg tracking-tight">
+                  Pickleball 
+                  <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent ml-2">
+                    Tracker
+                  </span>
+                </h1>
+                <p className="text-blue-100 text-sm font-medium mt-1 opacity-90">
+                  Tournament & League Management
+                </p>
+              </div>
+            </div>
+            
+            {/* Stats badge */}
+            <div className="hidden md:flex items-center gap-6">
+              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">{tournaments.length + leagues.length}</div>
+                  <div className="text-xs text-blue-100">Events</div>
+                </div>
+                <div className="w-px h-8 bg-white/30"></div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-white">{members.length}</div>
+                  <div className="text-xs text-blue-100">Members</div>
+                </div>
+                <div className="w-px h-8 bg-white/30"></div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-yellow-300">
+                    {[...tournaments, ...leagues].flatMap(event => 
+                      event.teamMembers.filter(member => member.paymentStatus === 'pending')
+                    ).length}
+                  </div>
+                  <div className="text-xs text-blue-100">Pending</div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+        
+        {/* Bottom wave decoration */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1200 120" fill="none" className="w-full h-8">
+            <path d="M0,60 C200,100 400,20 600,60 C800,100 1000,20 1200,60 L1200,120 L0,120 Z" 
+                  fill="white" fillOpacity="0.1"/>
+          </svg>
         </div>
       </header>
 
       {/* Navigation */}
-      <nav className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 relative z-40">
+      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 relative z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-2 py-3">
+          <div className="flex space-x-2 py-4">
             {[
-              { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'blue' },
-              { id: 'tournaments', label: 'Tournaments', icon: Calendar, color: 'emerald' },
-              { id: 'leagues', label: 'Leagues', icon: Trophy, color: 'purple' },
-              { id: 'members', label: 'Members', icon: Users, color: 'amber' }
+              { id: 'dashboard', label: 'Dashboard', icon: Home, activeClass: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg', hoverClass: 'text-gray-600 hover:text-blue-700 hover:bg-blue-50 hover:shadow-md border-2 border-transparent hover:border-blue-200' },
+              { id: 'tournaments', label: 'Tournaments', icon: Calendar, activeClass: 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg', hoverClass: 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50 hover:shadow-md border-2 border-transparent hover:border-emerald-200' },
+              { id: 'leagues', label: 'Leagues', icon: Trophy, activeClass: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg', hoverClass: 'text-gray-600 hover:text-purple-700 hover:bg-purple-50 hover:shadow-md border-2 border-transparent hover:border-purple-200' },
+              { id: 'members', label: 'Members', icon: Users, activeClass: 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg', hoverClass: 'text-gray-600 hover:text-amber-700 hover:bg-amber-50 hover:shadow-md border-2 border-transparent hover:border-amber-200' }
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -1077,12 +1059,11 @@ const PickleballTracker = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 ${
-                    isActive
-                      ? `bg-white text-${tab.color}-700 shadow-lg border-2 border-${tab.color}-200 shadow-${tab.color}-100`
-                      : `text-gray-600 hover:text-${tab.color}-700 hover:bg-white/60 hover:shadow-md border-2 border-transparent`
+                    isActive ? tab.activeClass : tab.hoverClass
                   }`}
                 >
-                  <Icon className={`h-5 w-5 ${isActive ? `text-${tab.color}-600` : ''}`} />
+                >
+                  <Icon className={`h-5 w-5 ${isActive ? 'text-white' : ''}`} />
                   {tab.label}
                 </button>
               );
