@@ -12,6 +12,7 @@ const PickleballTracker = () => {
   const [eventType, setEventType] = useState('tournament');
   const [editingEvent, setEditingEvent] = useState(null);
   const [editingMember, setEditingMember] = useState(null);
+  const [showAddDropdown, setShowAddDropdown] = useState(false);
 
   // Load sample data on initial render
   useEffect(() => {
@@ -67,6 +68,20 @@ const PickleballTracker = () => {
     setTournaments(sampleTournaments);
     setLeagues(sampleLeagues);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showAddDropdown && !event.target.closest('.relative')) {
+        setShowAddDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAddDropdown]);
 
   // Helper functions
   const getMemberName = (memberId) => {
@@ -365,7 +380,8 @@ const PickleballTracker = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-auto"
+             style={{ transform: 'translateX(0)' }}>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             {editingEvent ? 'Edit' : 'Add'} {eventType === 'tournament' ? 'Tournament' : 'League'}
           </h2>
@@ -654,7 +670,8 @@ const PickleballTracker = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
+        <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-auto"
+             style={{ transform: 'translateX(0)' }}>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             {editingMember ? 'Edit' : 'Add'} Member
           </h2>
@@ -889,13 +906,57 @@ const PickleballTracker = () => {
               </div>
               <h1 className="text-2xl font-bold text-gray-900">Pickleball Tracker</h1>
             </div>
-            <button
-              onClick={() => setShowMemberModal(true)}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2 font-medium shadow-sm"
-            >
-              <Plus className="h-4 w-4" />
-              Add Member
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowAddDropdown(!showAddDropdown)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 font-medium shadow-sm"
+              >
+                <Plus className="h-4 w-4" />
+                Add New
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {showAddDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="py-2">
+                    <button
+                      onClick={() => {
+                        setShowMemberModal(true);
+                        setShowAddDropdown(false);
+                      }}
+                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <Users className="h-4 w-4 text-emerald-600" />
+                      Add Member
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEventType('tournament');
+                        setShowEventModal(true);
+                        setShowAddDropdown(false);
+                      }}
+                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <Calendar className="h-4 w-4 text-blue-600" />
+                      Add Tournament
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEventType('league');
+                        setShowEventModal(true);
+                        setShowAddDropdown(false);
+                      }}
+                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <Trophy className="h-4 w-4 text-purple-600" />
+                      Add League
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -903,7 +964,7 @@ const PickleballTracker = () => {
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
+          <div className="flex space-x-1">
             {[
               { id: 'dashboard', label: 'Dashboard', icon: Home },
               { id: 'tournaments', label: 'Tournaments', icon: Calendar },
@@ -915,10 +976,10 @@ const PickleballTracker = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-1 py-4 border-b-2 font-medium text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'bg-blue-50 text-blue-700 border-2 border-blue-200'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-2 border-transparent'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
