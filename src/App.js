@@ -17,6 +17,33 @@ const PickleballTracker = () => {
   const [memberSearch, setMemberSearch] = useState('');
   const [tournamentSearch, setTournamentSearch] = useState('');
   const [leagueSearch, setLeagueSearch] = useState('');
+  
+  // Debounced search states
+  const [memberSearchInput, setMemberSearchInput] = useState('');
+  const [tournamentSearchInput, setTournamentSearchInput] = useState('');
+  const [leagueSearchInput, setLeagueSearchInput] = useState('');
+
+  // Debounce search functionality
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMemberSearch(memberSearchInput);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [memberSearchInput]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTournamentSearch(tournamentSearchInput);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [tournamentSearchInput]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLeagueSearch(leagueSearchInput);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [leagueSearchInput]);
 
   // Load data from localStorage on initial render, or use sample data if none exists
   useEffect(() => {
@@ -919,13 +946,33 @@ const PickleballTracker = () => {
   // Event List Component with improved design
   const EventList = ({ events, type, onEdit, onDelete }) => {
     const searchTerm = type === 'tournament' ? tournamentSearch : leagueSearch;
-    const setSearchTerm = type === 'tournament' ? setTournamentSearch : setLeagueSearch;
+    const searchInput = type === 'tournament' ? tournamentSearchInput : leagueSearchInput;
+    const setSearchInput = type === 'tournament' ? setTournamentSearchInput : setLeagueSearchInput;
+    const clearSearch = () => {
+      if (type === 'tournament') {
+        setTournamentSearchInput('');
+        setTournamentSearch('');
+      } else {
+        setLeagueSearchInput('');
+        setLeagueSearch('');
+      }
+    };
     
     const filteredEvents = events.filter(event =>
       event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.division.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        if (type === 'tournament') {
+          setTournamentSearch(tournamentSearchInput);
+        } else {
+          setLeagueSearch(leagueSearchInput);
+        }
+      }
+    };
 
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -946,24 +993,33 @@ const PickleballTracker = () => {
           
           {/* Search Box */}
           <div className="relative">
-            <input
-              type="text"
-              placeholder={`Search ${type}s by name, location, or division...`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <div className="absolute left-3 top-2.5 text-gray-400">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
+            <input
+              type="text"
+              placeholder={`Search ${type}s by name, location, or division... (Press Enter to search)`}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
           
           {searchTerm && (
-            <p className="text-sm text-gray-600 mt-2">
-              Showing {filteredEvents.length} of {events.length} {type}s
-            </p>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-sm text-gray-600">
+                Showing {filteredEvents.length} of {events.length} {type}s
+              </p>
+              <button
+                onClick={clearSearch}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Clear search
+              </button>
+            </div>
           )}
         </div>
         
@@ -1163,7 +1219,7 @@ const PickleballTracker = () => {
                 <div>
                   <p className="text-gray-500 mb-2">No {type}s found matching "{searchTerm}"</p>
                   <button
-                    onClick={() => setSearchTerm('')}
+                    onClick={clearSearch}
                     className="text-blue-600 hover:text-blue-700 font-medium"
                   >
                     Clear search
@@ -1338,29 +1394,45 @@ const PickleballTracker = () => {
               
               {/* Search Box */}
               <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search members by name, email, skill level, or notes..."
-                  value={memberSearch}
-                  onChange={(e) => setMemberSearch(e.target.value)}
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                />
-                <div className="absolute left-3 top-2.5 text-gray-400">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
+                <input
+                  type="text"
+                  placeholder="Search members by name, email, skill level, or notes... (Press Enter to search)"
+                  value={memberSearchInput}
+                  onChange={(e) => setMemberSearchInput(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      setMemberSearch(memberSearchInput);
+                    }
+                  }}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                />
               </div>
               
               {memberSearch && (
-                <p className="text-sm text-gray-600 mt-2">
-                  Showing {members.filter(member =>
-                    member.name.toLowerCase().includes(memberSearch.toLowerCase()) ||
-                    member.email.toLowerCase().includes(memberSearch.toLowerCase()) ||
-                    member.skillLevel.toLowerCase().includes(memberSearch.toLowerCase()) ||
-                    (member.notes && member.notes.toLowerCase().includes(memberSearch.toLowerCase()))
-                  ).length} of {members.length} members
-                </p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-sm text-gray-600">
+                    Showing {members.filter(member =>
+                      member.name.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                      member.email.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                      member.skillLevel.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                      (member.notes && member.notes.toLowerCase().includes(memberSearch.toLowerCase()))
+                    ).length} of {members.length} members
+                  </p>
+                  <button
+                    onClick={() => {
+                      setMemberSearchInput('');
+                      setMemberSearch('');
+                    }}
+                    className="text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+                  >
+                    Clear search
+                  </button>
+                </div>
               )}
             </div>
             
@@ -1416,7 +1488,10 @@ const PickleballTracker = () => {
                       <div>
                         <p className="text-gray-500 mb-2">No members found matching "{memberSearch}"</p>
                         <button
-                          onClick={() => setMemberSearch('')}
+                          onClick={() => {
+                            setMemberSearchInput('');
+                            setMemberSearch('');
+                          }}
                           className="text-emerald-600 hover:text-emerald-700 font-medium"
                         >
                           Clear search
