@@ -235,6 +235,48 @@ const PickleballTracker = () => {
     }
   };
 
+  // Export/Import functionality
+  const exportData = () => {
+    const dataToExport = {
+      members,
+      tournaments,
+      leagues,
+      exportDate: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(dataToExport, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `pickleball-data-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+  };
+
+  const importData = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target.result);
+        
+        if (importedData.members) setMembers(importedData.members);
+        if (importedData.tournaments) setTournaments(importedData.tournaments);
+        if (importedData.leagues) setLeagues(importedData.leagues);
+        
+        alert('Data imported successfully!');
+      } catch (error) {
+        alert('Error importing data. Please check the file format.');
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+  };
+
   // Quick payment status update function
   const updateTeamMemberPaymentStatus = (eventId, eventType, memberIndex, newStatus) => {
     if (eventType === 'tournament') {
@@ -287,6 +329,41 @@ const PickleballTracker = () => {
 
     return (
       <div className="space-y-8">
+        {/* Data Storage Notice */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="p-1 bg-blue-100 rounded">
+              <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-blue-800 mb-1">Data Storage Notice</h4>
+              <p className="text-sm text-blue-700 mb-2">
+                Your data is stored locally in this browser only. It won't sync across devices or browsers.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={exportData}
+                  className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                >
+                  📁 Export Backup
+                </button>
+                
+                <label className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 transition-colors cursor-pointer">
+                  📂 Import Backup
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={importData}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
@@ -1305,6 +1382,28 @@ const PickleballTracker = () => {
                   </div>
                   <div className="text-xs text-blue-100">Pending</div>
                 </div>
+              </div>
+              
+              {/* Data Management Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={exportData}
+                  className="px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 text-white text-sm hover:bg-white/20 transition-colors"
+                  title="Export all data as backup file"
+                >
+                  📁 Export
+                </button>
+                
+                <label className="px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 text-white text-sm hover:bg-white/20 transition-colors cursor-pointer"
+                     title="Import data from backup file">
+                  📂 Import
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={importData}
+                    className="hidden"
+                  />
+                </label>
               </div>
             </div>
           </div>
