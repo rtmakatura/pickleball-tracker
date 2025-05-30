@@ -583,62 +583,63 @@ const PickleballTracker = () => {
               />
             <div>
                   
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-700">Team Members</label>
-              <button
-                type="button"
-                onClick={addTeamMember}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Add Member
-              </button>
+             <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">Team Members</label>
+                <button
+                  type="button"
+                  onClick={addTeamMember}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Member
+                </button>
+              </div>
+              
+              <div className="space-y-3 max-h-48 overflow-y-auto">
+                {formData.teamMembers.map((member, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <select
+                      value={member.memberId}
+                      onChange={(e) => updateTeamMember(index, 'memberId', parseInt(e.target.value))}
+                      className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+                    >
+                      <option value="">Select Member</option>
+                      {members.map(m => (
+                        <option key={m.id} value={m.id}>{m.name}</option>
+                      ))}
+                    </select>
+                    
+                    <input
+                      type="text"
+                      value={member.role}
+                      onChange={(e) => updateTeamMember(index, 'role', e.target.value)}
+                      placeholder="Role"
+                      className="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
+                    />
+                    
+                    <select
+                      value={member.paymentStatus}
+                      onChange={(e) => updateTeamMember(index, 'paymentStatus', e.target.value)}
+                      className="w-36 px-2 py-1 border border-gray-300 rounded text-sm"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="paid_direct">Paid Direct</option>
+                      <option value="paid_coordinator">Paid Coordinator</option>
+                      <option value="overdue">Overdue</option>
+                    </select>
+                    
+                    <button
+                      type="button"
+                      onClick={() => removeTeamMember(index)}
+                      className="p-1 text-red-600 hover:bg-red-100 rounded"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            <div className="space-y-3 max-h-48 overflow-y-auto">
-              {formData.teamMembers.map((member, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  <select
-                    value={member.memberId}
-                    onChange={(e) => updateTeamMember(index, 'memberId', parseInt(e.target.value))}
-                    className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
-                  >
-                    <option value="">Select Member</option>
-                    {members.map(m => (
-                      <option key={m.id} value={m.id}>{m.name}</option>
-                    ))}
-                  </select>
-                  
-                  <input
-                    type="text"
-                    value={member.role}
-                    onChange={(e) => updateTeamMember(index, 'role', e.target.value)}
-                    placeholder="Role"
-                    className="w-24 px-2 py-1 border border-gray-300 rounded text-sm"
-                  />
-                  
-                  <select
-                    value={member.paymentStatus}
-                    onChange={(e) => updateTeamMember(index, 'paymentStatus', e.target.value)}
-                    className="w-36 px-2 py-1 border border-gray-300 rounded text-sm"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="paid_direct">Paid Direct</option>
-                    <option value="paid_coordinator">Paid Coordinator</option>
-                    <option value="overdue">Overdue</option>
-                  </select>
-                  
-                  <button
-                    type="button"
-                    onClick={() => removeTeamMember(index)}
-                    className="p-1 text-red-600 hover:bg-red-100 rounded"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
 
             <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
               <button
