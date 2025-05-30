@@ -1062,7 +1062,6 @@ const PickleballTracker = () => {
                     isActive ? tab.activeClass : tab.hoverClass
                   }`}
                 >
-                >
                   <Icon className={`h-5 w-5 ${isActive ? 'text-white' : ''}`} />
                   {tab.label}
                 </button>
