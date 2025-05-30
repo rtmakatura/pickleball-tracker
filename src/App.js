@@ -12,69 +12,94 @@ const PickleballTracker = () => {
   const [eventType, setEventType] = useState('tournament');
   const [editingEvent, setEditingEvent] = useState(null);
   const [editingMember, setEditingMember] = useState(null);
+  
+  // Search states
+  const [memberSearch, setMemberSearch] = useState('');
+  const [tournamentSearch, setTournamentSearch] = useState('');
+  const [leagueSearch, setLeagueSearch] = useState('');
 
-  // Load sample data on initial render
+  // Load data from localStorage on initial render, or use sample data if none exists
   useEffect(() => {
-    const sampleMembers = [
-      { id: 1, name: 'John Smith', email: 'john@email.com', phone: '555-0101', skillLevel: '3.5', venmo: '@johnsmith', notes: 'Prefers morning games. Has his own paddle.' },
-      { id: 2, name: 'Sarah Johnson', email: 'sarah@email.com', phone: '555-0102', skillLevel: '4.0', venmo: '@sarahj', notes: 'Team captain experience. Available weekends only.' },
-      { id: 3, name: 'Mike Davis', email: 'mike@email.com', phone: '555-0103', skillLevel: '3.0', venmo: '@miked', notes: 'New to pickleball but learning fast!' },
-      { id: 4, name: 'Lisa Wilson', email: 'lisa@email.com', phone: '555-0104', skillLevel: '4.5', venmo: '@lisaw', notes: 'Tournament experience. Available for coaching.' }
-    ];
+    const savedData = localStorage.getItem('pickleballTrackerData');
     
-    const sampleTournaments = [
-      {
-        id: 1,
-        name: 'Spring Championship',
-        type: 'tournament',
-        location: 'Central Park Courts',
-        date: '2025-06-15',
-        time: '9:00 AM',
-        division: '4.0',
-        fee: 50,
-        status: 'registered',
-        paymentMethod: 'group',
-        paymentCoordinator: 1,
-        googleMapsLink: 'https://maps.google.com/?q=Central+Park+Courts',
-        tournamentLink: 'https://example.com/spring-championship',
-        eventFormat: 'Round Robin followed by Single Elimination bracket for top 8 teams',
-        scoringFormat: 'Best of 3 games to 11 points, win by 2, rally scoring',
-        additionalNotes: 'Bring sunscreen and water bottles. Check-in starts at 8:30 AM. Lunch provided between rounds.',
-        teamMembers: [
-          { memberId: 1, role: 'Player 1', status: 'confirmed', amountOwed: 50, paymentStatus: 'paid_coordinator', paidDate: '2025-05-20' },
-          { memberId: 2, role: 'Player 2', status: 'confirmed', amountOwed: 50, paymentStatus: 'pending', paidDate: null }
-        ]
-      }
-    ];
+    if (savedData) {
+      const { savedMembers, savedTournaments, savedLeagues } = JSON.parse(savedData);
+      setMembers(savedMembers || []);
+      setTournaments(savedTournaments || []);
+      setLeagues(savedLeagues || []);
+    } else {
+      // Load sample data only if no saved data exists
+      const sampleMembers = [
+        { id: 1, name: 'John Smith', email: 'john@email.com', phone: '555-0101', skillLevel: '3.5', venmo: '@johnsmith', notes: 'Prefers morning games. Has his own paddle.' },
+        { id: 2, name: 'Sarah Johnson', email: 'sarah@email.com', phone: '555-0102', skillLevel: '4.0', venmo: '@sarahj', notes: 'Team captain experience. Available weekends only.' },
+        { id: 3, name: 'Mike Davis', email: 'mike@email.com', phone: '555-0103', skillLevel: '3.0', venmo: '@miked', notes: 'New to pickleball but learning fast!' },
+        { id: 4, name: 'Lisa Wilson', email: 'lisa@email.com', phone: '555-0104', skillLevel: '4.5', venmo: '@lisaw', notes: 'Tournament experience. Available for coaching.' }
+      ];
+      
+      const sampleTournaments = [
+        {
+          id: 1,
+          name: 'Spring Championship',
+          type: 'tournament',
+          location: 'Central Park Courts',
+          date: '2025-06-15',
+          time: '9:00 AM',
+          division: '4.0',
+          fee: 50,
+          status: 'registered',
+          paymentMethod: 'group',
+          paymentCoordinator: 1,
+          googleMapsLink: 'https://maps.google.com/?q=Central+Park+Courts',
+          tournamentLink: 'https://example.com/spring-championship',
+          eventFormat: 'Round Robin followed by Single Elimination bracket for top 8 teams',
+          scoringFormat: 'Best of 3 games to 11 points, win by 2, rally scoring',
+          additionalNotes: 'Bring sunscreen and water bottles. Check-in starts at 8:30 AM. Lunch provided between rounds.',
+          teamMembers: [
+            { memberId: 1, role: 'Player 1', status: 'confirmed', amountOwed: 50, paymentStatus: 'paid_coordinator', paidDate: '2025-05-20' },
+            { memberId: 2, role: 'Player 2', status: 'confirmed', amountOwed: 50, paymentStatus: 'pending', paidDate: null }
+          ]
+        }
+      ];
 
-    const sampleLeagues = [
-      {
-        id: 1,
-        name: 'Summer League 2025',
-        type: 'league',
-        location: 'Recreation Center',
-        startDate: '2025-06-01',
-        endDate: '2025-08-31',
-        dayOfWeek: 'Tuesday',
-        time: '7:00 PM',
-        division: '3.5',
-        fee: 120,
-        status: 'active',
-        paymentMethod: 'direct',
-        googleMapsLink: 'https://maps.google.com/?q=Recreation+Center',
-        tournamentLink: 'https://example.com/summer-league',
-        notes: 'Indoor courts available in case of rain. Equipment rental available on-site.',
-        teamMembers: [
-          { memberId: 1, role: 'Regular', status: 'confirmed', amountOwed: 120, paymentStatus: 'paid_direct', paidDate: '2025-05-15' },
-          { memberId: 3, role: 'Regular', status: 'confirmed', amountOwed: 120, paymentStatus: 'pending', paidDate: null }
-        ]
-      }
-    ];
+      const sampleLeagues = [
+        {
+          id: 1,
+          name: 'Summer League 2025',
+          type: 'league',
+          location: 'Recreation Center',
+          startDate: '2025-06-01',
+          endDate: '2025-08-31',
+          dayOfWeek: 'Tuesday',
+          time: '7:00 PM',
+          division: '3.5',
+          fee: 120,
+          status: 'active',
+          paymentMethod: 'direct',
+          googleMapsLink: 'https://maps.google.com/?q=Recreation+Center',
+          tournamentLink: 'https://example.com/summer-league',
+          notes: 'Indoor courts available in case of rain. Equipment rental available on-site.',
+          teamMembers: [
+            { memberId: 1, role: 'Regular', status: 'confirmed', amountOwed: 120, paymentStatus: 'paid_direct', paidDate: '2025-05-15' },
+            { memberId: 3, role: 'Regular', status: 'confirmed', amountOwed: 120, paymentStatus: 'pending', paidDate: null }
+          ]
+        }
+      ];
 
-    setMembers(sampleMembers);
-    setTournaments(sampleTournaments);
-    setLeagues(sampleLeagues);
+      setMembers(sampleMembers);
+      setTournaments(sampleTournaments);
+      setLeagues(sampleLeagues);
+    }
   }, []);
+
+  // Save data to localStorage whenever state changes
+  useEffect(() => {
+    const dataToSave = {
+      savedMembers: members,
+      savedTournaments: tournaments,
+      savedLeagues: leagues
+    };
+    localStorage.setItem('pickleballTrackerData', JSON.stringify(dataToSave));
+  }, [members, tournaments, leagues]);
 
   // Helper functions
   const getMemberName = (memberId) => {
@@ -150,10 +175,16 @@ const PickleballTracker = () => {
   };
 
   const deleteEvent = (id, type) => {
-    if (type === 'tournament') {
-      setTournaments(tournaments.filter(t => t.id !== id));
-    } else {
-      setLeagues(leagues.filter(l => l.id !== id));
+    const eventName = type === 'tournament' 
+      ? tournaments.find(t => t.id === id)?.name 
+      : leagues.find(l => l.id === id)?.name;
+    
+    if (confirm(`Are you sure you want to delete "${eventName}"? This action cannot be undone.`)) {
+      if (type === 'tournament') {
+        setTournaments(tournaments.filter(t => t.id !== id));
+      } else {
+        setLeagues(leagues.filter(l => l.id !== id));
+      }
     }
   };
 
@@ -171,7 +202,41 @@ const PickleballTracker = () => {
   };
 
   const deleteMember = (id) => {
-    setMembers(members.filter(m => m.id !== id));
+    const member = members.find(m => m.id === id);
+    if (confirm(`Are you sure you want to delete "${member?.name}"? This action cannot be undone.`)) {
+      setMembers(members.filter(m => m.id !== id));
+    }
+  };
+
+  // Quick payment status update function
+  const updateTeamMemberPaymentStatus = (eventId, eventType, memberIndex, newStatus) => {
+    if (eventType === 'tournament') {
+      setTournaments(tournaments.map(tournament => {
+        if (tournament.id === eventId) {
+          const updatedMembers = [...tournament.teamMembers];
+          updatedMembers[memberIndex] = {
+            ...updatedMembers[memberIndex],
+            paymentStatus: newStatus,
+            paidDate: newStatus.includes('paid') ? new Date().toISOString().split('T')[0] : null
+          };
+          return { ...tournament, teamMembers: updatedMembers };
+        }
+        return tournament;
+      }));
+    } else {
+      setLeagues(leagues.map(league => {
+        if (league.id === eventId) {
+          const updatedMembers = [...league.teamMembers];
+          updatedMembers[memberIndex] = {
+            ...updatedMembers[memberIndex],
+            paymentStatus: newStatus,
+            paidDate: newStatus.includes('paid') ? new Date().toISOString().split('T')[0] : null
+          };
+          return { ...league, teamMembers: updatedMembers };
+        }
+        return league;
+      }));
+    }
   };
 
   // Dashboard Component
@@ -317,7 +382,13 @@ const PickleballTracker = () => {
 
     useEffect(() => {
       if (editingEvent) {
-        setFormData(editingEvent);
+        setFormData({
+          ...editingEvent,
+          // Ensure new fields exist for tournaments
+          eventFormat: editingEvent.eventFormat || '',
+          scoringFormat: editingEvent.scoringFormat || '',
+          additionalNotes: editingEvent.additionalNotes || ''
+        });
       } else {
         setFormData({
           name: '',
@@ -847,10 +918,19 @@ const PickleballTracker = () => {
 
   // Event List Component with improved design
   const EventList = ({ events, type, onEdit, onDelete }) => {
+    const searchTerm = type === 'tournament' ? tournamentSearch : leagueSearch;
+    const setSearchTerm = type === 'tournament' ? setTournamentSearch : setLeagueSearch;
+    
+    const filteredEvents = events.filter(event =>
+      event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.division.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-semibold text-gray-900 capitalize">{type}s</h3>
             <button
               onClick={() => {
@@ -863,10 +943,32 @@ const PickleballTracker = () => {
               Add {type}
             </button>
           </div>
+          
+          {/* Search Box */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder={`Search ${type}s by name, location, or division...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <div className="absolute left-3 top-2.5 text-gray-400">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+          
+          {searchTerm && (
+            <p className="text-sm text-gray-600 mt-2">
+              Showing {filteredEvents.length} of {events.length} {type}s
+            </p>
+          )}
         </div>
         
         <div className="divide-y divide-gray-100">
-          {events.length > 0 ? events.map(event => (
+          {filteredEvents.length > 0 ? filteredEvents.map(event => (
             <div key={event.id} className="p-6 hover:bg-gray-50 transition-colors">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -990,9 +1092,41 @@ const PickleballTracker = () => {
                               <span className="font-medium text-gray-900">{getMemberName(member.memberId)}</span>
                               <span className="text-gray-500 ml-2 text-sm">({member.role})</span>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPaymentStatusColor(member.paymentStatus)}`}>
-                              {formatPaymentStatus(member.paymentStatus)}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPaymentStatusColor(member.paymentStatus)}`}>
+                                {formatPaymentStatus(member.paymentStatus)}
+                              </span>
+                              
+                              {/* Quick Payment Status Buttons */}
+                              {member.paymentStatus === 'pending' && (
+                                <div className="flex gap-1 ml-2">
+                                  <button
+                                    onClick={() => updateTeamMemberPaymentStatus(event.id, type, index, 'paid_direct')}
+                                    className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
+                                    title="Mark as Paid Direct"
+                                  >
+                                    ✓ Paid
+                                  </button>
+                                  <button
+                                    onClick={() => updateTeamMemberPaymentStatus(event.id, type, index, 'overdue')}
+                                    className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200 transition-colors"
+                                    title="Mark as Overdue"
+                                  >
+                                    Overdue
+                                  </button>
+                                </div>
+                              )}
+                              
+                              {member.paymentStatus === 'overdue' && (
+                                <button
+                                  onClick={() => updateTeamMemberPaymentStatus(event.id, type, index, 'paid_direct')}
+                                  className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors ml-2"
+                                  title="Mark as Paid Direct"
+                                >
+                                  ✓ Paid
+                                </button>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -1025,16 +1159,30 @@ const PickleballTracker = () => {
               <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Calendar className="h-8 w-8 text-gray-400" />
               </div>
-              <p className="text-gray-500 mb-4">No {type}s added yet</p>
-              <button
-                onClick={() => {
-                  setEventType(type);
-                  setShowEventModal(true);
-                }}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Add your first {type}
-              </button>
+              {searchTerm ? (
+                <div>
+                  <p className="text-gray-500 mb-2">No {type}s found matching "{searchTerm}"</p>
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Clear search
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-gray-500 mb-4">No {type}s added yet</p>
+                  <button
+                    onClick={() => {
+                      setEventType(type);
+                      setShowEventModal(true);
+                    }}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Add your first {type}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1177,7 +1325,7 @@ const PickleballTracker = () => {
         {activeTab === 'members' && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold text-gray-900">Members</h3>
                 <button
                   onClick={() => setShowMemberModal(true)}
@@ -1187,57 +1335,107 @@ const PickleballTracker = () => {
                   Add Member
                 </button>
               </div>
+              
+              {/* Search Box */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search members by name, email, skill level, or notes..."
+                  value={memberSearch}
+                  onChange={(e) => setMemberSearch(e.target.value)}
+                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                />
+                <div className="absolute left-3 top-2.5 text-gray-400">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+              
+              {memberSearch && (
+                <p className="text-sm text-gray-600 mt-2">
+                  Showing {members.filter(member =>
+                    member.name.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                    member.email.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                    member.skillLevel.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                    (member.notes && member.notes.toLowerCase().includes(memberSearch.toLowerCase()))
+                  ).length} of {members.length} members
+                </p>
+              )}
             </div>
             
             <div className="divide-y divide-gray-100">
-              {members.length > 0 ? members.map(member => (
-                <div key={member.id} className="p-6 hover:bg-gray-50 transition-colors flex items-center justify-between">
-                  <div className="flex-1">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{member.name}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-2">
-                      <p><span className="font-medium">Email:</span> {member.email}</p>
-                      <p><span className="font-medium">Phone:</span> {member.phone}</p>
-                      <p><span className="font-medium">Skill Level:</span> {member.skillLevel}</p>
-                      <p><span className="font-medium">Venmo:</span> {member.venmo}</p>
+              {(() => {
+                const filteredMembers = members.filter(member =>
+                  member.name.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                  member.email.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                  member.skillLevel.toLowerCase().includes(memberSearch.toLowerCase()) ||
+                  (member.notes && member.notes.toLowerCase().includes(memberSearch.toLowerCase()))
+                );
+                
+                return filteredMembers.length > 0 ? filteredMembers.map(member => (
+                  <div key={member.id} className="p-6 hover:bg-gray-50 transition-colors flex items-center justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">{member.name}</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-2">
+                        <p><span className="font-medium">Email:</span> {member.email}</p>
+                        <p><span className="font-medium">Phone:</span> {member.phone}</p>
+                        <p><span className="font-medium">Skill Level:</span> {member.skillLevel}</p>
+                        <p><span className="font-medium">Venmo:</span> {member.venmo}</p>
+                      </div>
+                      {member.notes && (
+                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm text-blue-700">{member.notes}</p>
+                        </div>
+                      )}
                     </div>
-                    {member.notes && (
-                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-sm text-blue-700">{member.notes}</p>
+                    <div className="flex items-center gap-2 ml-6">
+                      <button
+                        onClick={() => {
+                          setEditingMember(member);
+                          setShowMemberModal(true);
+                        }}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      >
+                        <Edit3 className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => deleteMember(member.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="p-12 text-center">
+                    <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                      <Users className="h-8 w-8 text-gray-400" />
+                    </div>
+                    {memberSearch ? (
+                      <div>
+                        <p className="text-gray-500 mb-2">No members found matching "{memberSearch}"</p>
+                        <button
+                          onClick={() => setMemberSearch('')}
+                          className="text-emerald-600 hover:text-emerald-700 font-medium"
+                        >
+                          Clear search
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-gray-500 mb-4">No members added yet</p>
+                        <button
+                          onClick={() => setShowMemberModal(true)}
+                          className="text-emerald-600 hover:text-emerald-700 font-medium"
+                        >
+                          Add your first member
+                        </button>
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 ml-6">
-                    <button
-                      onClick={() => {
-                        setEditingMember(member);
-                        setShowMemberModal(true);
-                      }}
-                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    >
-                      <Edit3 className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => deleteMember(member.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                </div>
-              )) : (
-                <div className="p-12 text-center">
-                  <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Users className="h-8 w-8 text-gray-400" />
-                  </div>
-                  <p className="text-gray-500 mb-4">No members added yet</p>
-                  <button
-                    onClick={() => setShowMemberModal(true)}
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                  >
-                    Add your first member
-                  </button>
-                </div>
-              )}
+                );
+              })()}
             </div>
           </div>
         )}
