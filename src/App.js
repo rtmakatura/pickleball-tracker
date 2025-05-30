@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, Users, DollarSign, MapPin, Clock, Trophy, Target, Edit3, Trash2, Check, X, AlertCircle, Home } from 'lucide-react';
+import { Plus, Calendar, Users, DollarSign, MapPin, Clock, Trophy, Target, Edit3, Trash2, Check, X, AlertCircle, Home, ExternalLink, Navigation } from 'lucide-react';
 
 const PickleballTracker = () => {
   // State management
@@ -17,10 +17,10 @@ const PickleballTracker = () => {
   // Load sample data on initial render
   useEffect(() => {
     const sampleMembers = [
-      { id: 1, name: 'John Smith', email: 'john@email.com', phone: '555-0101', skillLevel: '3.5', venmo: '@johnsmith' },
-      { id: 2, name: 'Sarah Johnson', email: 'sarah@email.com', phone: '555-0102', skillLevel: '4.0', venmo: '@sarahj' },
-      { id: 3, name: 'Mike Davis', email: 'mike@email.com', phone: '555-0103', skillLevel: '3.0', venmo: '@miked' },
-      { id: 4, name: 'Lisa Wilson', email: 'lisa@email.com', phone: '555-0104', skillLevel: '4.5', venmo: '@lisaw' }
+      { id: 1, name: 'John Smith', email: 'john@email.com', phone: '555-0101', skillLevel: '3.5', venmo: '@johnsmith', notes: 'Prefers morning games. Has his own paddle.' },
+      { id: 2, name: 'Sarah Johnson', email: 'sarah@email.com', phone: '555-0102', skillLevel: '4.0', venmo: '@sarahj', notes: 'Team captain experience. Available weekends only.' },
+      { id: 3, name: 'Mike Davis', email: 'mike@email.com', phone: '555-0103', skillLevel: '3.0', venmo: '@miked', notes: 'New to pickleball but learning fast!' },
+      { id: 4, name: 'Lisa Wilson', email: 'lisa@email.com', phone: '555-0104', skillLevel: '4.5', venmo: '@lisaw', notes: 'Tournament experience. Available for coaching.' }
     ];
     
     const sampleTournaments = [
@@ -36,6 +36,9 @@ const PickleballTracker = () => {
         status: 'registered',
         paymentMethod: 'group',
         paymentCoordinator: 1,
+        googleMapsLink: 'https://maps.google.com/?q=Central+Park+Courts',
+        tournamentLink: 'https://example.com/spring-championship',
+        notes: 'Bring sunscreen and water bottles. Check-in starts at 8:30 AM.',
         teamMembers: [
           { memberId: 1, role: 'Player 1', status: 'confirmed', amountOwed: 50, paymentStatus: 'paid_coordinator', paidDate: '2025-05-20' },
           { memberId: 2, role: 'Player 2', status: 'confirmed', amountOwed: 50, paymentStatus: 'pending', paidDate: null }
@@ -57,6 +60,9 @@ const PickleballTracker = () => {
         fee: 120,
         status: 'active',
         paymentMethod: 'direct',
+        googleMapsLink: 'https://maps.google.com/?q=Recreation+Center',
+        tournamentLink: 'https://example.com/summer-league',
+        notes: 'Indoor courts available in case of rain. Equipment rental available on-site.',
         teamMembers: [
           { memberId: 1, role: 'Regular', status: 'confirmed', amountOwed: 120, paymentStatus: 'paid_direct', paidDate: '2025-05-15' },
           { memberId: 3, role: 'Regular', status: 'confirmed', amountOwed: 120, paymentStatus: 'pending', paidDate: null }
@@ -321,6 +327,9 @@ const PickleballTracker = () => {
       status: 'interested',
       paymentMethod: 'direct',
       paymentCoordinator: '',
+      googleMapsLink: '',
+      tournamentLink: '',
+      notes: '',
       teamMembers: []
     });
 
@@ -342,6 +351,9 @@ const PickleballTracker = () => {
           status: 'interested',
           paymentMethod: 'direct',
           paymentCoordinator: '',
+          googleMapsLink: '',
+          tournamentLink: '',
+          notes: '',
           teamMembers: []
         });
       }
@@ -559,8 +571,40 @@ const PickleballTracker = () => {
               )}
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Google Maps Link</label>
+                <input
+                  type="url"
+                  value={formData.googleMapsLink}
+                  onChange={(e) => setFormData({ ...formData, googleMapsLink: e.target.value })}
+                  placeholder="https://maps.google.com/?q=..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{eventType === 'tournament' ? 'Tournament' : 'League'} Website</label>
+                <input
+                  type="url"
+                  value={formData.tournamentLink}
+                  onChange={(e) => setFormData({ ...formData, tournamentLink: e.target.value })}
+                  placeholder="https://example.com/event-page"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Additional information, rules, what to bring, etc..."
+                rows="3"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
                 <label className="block text-sm font-medium text-gray-700">Team Members</label>
                 <button
                   type="button"
@@ -648,7 +692,8 @@ const PickleballTracker = () => {
       email: '',
       phone: '',
       skillLevel: '',
-      venmo: ''
+      venmo: '',
+      notes: ''
     });
 
     useEffect(() => {
@@ -660,7 +705,8 @@ const PickleballTracker = () => {
           email: '',
           phone: '',
           skillLevel: '',
-          venmo: ''
+          venmo: '',
+          notes: ''
         });
       }
     }, [editingMember]);
@@ -735,6 +781,17 @@ const PickleballTracker = () => {
                 value={formData.venmo}
                 onChange={(e) => setFormData({ ...formData, venmo: e.target.value })}
                 placeholder="@username"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Preferences, availability, special notes..."
+                rows="3"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -838,6 +895,40 @@ const PickleballTracker = () => {
                       <span className="font-medium">{event.teamMembers.length} members</span>
                     </div>
                   </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    {event.googleMapsLink && (
+                      <a
+                        href={event.googleMapsLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition-colors font-medium"
+                      >
+                        <Navigation className="h-4 w-4" />
+                        Get Directions
+                      </a>
+                    )}
+                    {event.tournamentLink && (
+                      <a
+                        href={event.tournamentLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        View Details
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Notes */}
+                  {event.notes && (
+                    <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <h6 className="text-sm font-semibold text-amber-800 mb-1">Notes</h6>
+                      <p className="text-sm text-amber-700">{event.notes}</p>
+                    </div>
+                  )}
                   
                   {event.teamMembers.length > 0 && (
                     <div className="mt-4">
@@ -970,27 +1061,28 @@ const PickleballTracker = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200 relative z-40">
+      <nav className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-gray-200 relative z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-1 py-2">
+          <div className="flex space-x-2 py-3">
             {[
-              { id: 'dashboard', label: 'Dashboard', icon: Home },
-              { id: 'tournaments', label: 'Tournaments', icon: Calendar },
-              { id: 'leagues', label: 'Leagues', icon: Users },
-              { id: 'members', label: 'Members', icon: Users }
+              { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'blue' },
+              { id: 'tournaments', label: 'Tournaments', icon: Calendar, color: 'emerald' },
+              { id: 'leagues', label: 'Leagues', icon: Trophy, color: 'purple' },
+              { id: 'members', label: 'Members', icon: Users, color: 'amber' }
             ].map(tab => {
               const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
-                    activeTab === tab.id
-                      ? 'bg-blue-50 text-blue-700 border-2 border-blue-200'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-2 border-transparent'
+                  className={`flex items-center gap-3 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 ${
+                    isActive
+                      ? `bg-white text-${tab.color}-700 shadow-lg border-2 border-${tab.color}-200 shadow-${tab.color}-100`
+                      : `text-gray-600 hover:text-${tab.color}-700 hover:bg-white/60 hover:shadow-md border-2 border-transparent`
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className={`h-5 w-5 ${isActive ? `text-${tab.color}-600` : ''}`} />
                   {tab.label}
                 </button>
               );
@@ -1049,12 +1141,17 @@ const PickleballTracker = () => {
                 <div key={member.id} className="p-6 hover:bg-gray-50 transition-colors flex items-center justify-between">
                   <div className="flex-1">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">{member.name}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 mb-2">
                       <p><span className="font-medium">Email:</span> {member.email}</p>
                       <p><span className="font-medium">Phone:</span> {member.phone}</p>
                       <p><span className="font-medium">Skill Level:</span> {member.skillLevel}</p>
                       <p><span className="font-medium">Venmo:</span> {member.venmo}</p>
                     </div>
+                    {member.notes && (
+                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-700">{member.notes}</p>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 ml-6">
                     <button
