@@ -37,7 +37,9 @@ const PickleballTracker = () => {
         paymentCoordinator: 1,
         googleMapsLink: 'https://maps.google.com/?q=Central+Park+Courts',
         tournamentLink: 'https://example.com/spring-championship',
-        notes: 'Bring sunscreen and water bottles. Check-in starts at 8:30 AM.',
+        eventFormat: 'Round Robin followed by Single Elimination bracket for top 8 teams',
+        scoringFormat: 'Best of 3 games to 11 points, win by 2, rally scoring',
+        additionalNotes: 'Bring sunscreen and water bottles. Check-in starts at 8:30 AM. Lunch provided between rounds.',
         teamMembers: [
           { memberId: 1, role: 'Player 1', status: 'confirmed', amountOwed: 50, paymentStatus: 'paid_coordinator', paidDate: '2025-05-20' },
           { memberId: 2, role: 'Player 2', status: 'confirmed', amountOwed: 50, paymentStatus: 'pending', paidDate: null }
@@ -307,6 +309,9 @@ const PickleballTracker = () => {
       googleMapsLink: '',
       tournamentLink: '',
       notes: '',
+      eventFormat: '',
+      scoringFormat: '',
+      additionalNotes: '',
       teamMembers: []
     });
 
@@ -331,6 +336,9 @@ const PickleballTracker = () => {
           googleMapsLink: '',
           tournamentLink: '',
           notes: '',
+          eventFormat: '',
+          scoringFormat: '',
+          additionalNotes: '',
           teamMembers: []
         });
       }
@@ -572,16 +580,53 @@ const PickleballTracker = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-              <textarea
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Additional information, rules, what to bring, etc..."
-                rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+            {eventType === 'tournament' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Event Format</label>
+                  <textarea
+                    value={formData.eventFormat}
+                    onChange={(e) => setFormData({ ...formData, eventFormat: e.target.value })}
+                    placeholder="e.g., Round Robin, Single Elimination, etc..."
+                    rows="3"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Scoring Format</label>
+                  <textarea
+                    value={formData.scoringFormat}
+                    onChange={(e) => setFormData({ ...formData, scoringFormat: e.target.value })}
+                    placeholder="e.g., Best of 3 games to 11, rally scoring, etc..."
+                    rows="3"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+                  <textarea
+                    value={formData.additionalNotes}
+                    onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
+                    placeholder="What to bring, check-in times, special rules, etc..."
+                    rows="3"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                <textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Additional information, rules, what to bring, etc..."
+                  rows="3"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            )}
 
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -641,7 +686,7 @@ const PickleballTracker = () => {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-6">
               <button
                 type="button"
                 onClick={() => {
@@ -776,7 +821,7 @@ const PickleballTracker = () => {
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-6">
               <button
                 type="button"
                 onClick={() => {
@@ -903,11 +948,36 @@ const PickleballTracker = () => {
                   </div>
 
                   {/* Notes */}
-                  {event.notes && (
-                    <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                      <h6 className="text-sm font-semibold text-amber-800 mb-1">Notes</h6>
-                      <p className="text-sm text-amber-700">{event.notes}</p>
-                    </div>
+                  {type === 'tournament' ? (
+                    (event.eventFormat || event.scoringFormat || event.additionalNotes) && (
+                      <div className="mb-4 space-y-3">
+                        {event.eventFormat && (
+                          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h6 className="text-sm font-semibold text-blue-800 mb-1">Event Format</h6>
+                            <p className="text-sm text-blue-700">{event.eventFormat}</p>
+                          </div>
+                        )}
+                        {event.scoringFormat && (
+                          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <h6 className="text-sm font-semibold text-green-800 mb-1">Scoring Format</h6>
+                            <p className="text-sm text-green-700">{event.scoringFormat}</p>
+                          </div>
+                        )}
+                        {event.additionalNotes && (
+                          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                            <h6 className="text-sm font-semibold text-amber-800 mb-1">Additional Notes</h6>
+                            <p className="text-sm text-amber-700">{event.additionalNotes}</p>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  ) : (
+                    event.notes && (
+                      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <h6 className="text-sm font-semibold text-amber-800 mb-1">Notes</h6>
+                        <p className="text-sm text-amber-700">{event.notes}</p>
+                      </div>
+                    )
                   )}
                   
                   {event.teamMembers.length > 0 && (
