@@ -219,7 +219,7 @@ const App = () => {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={navTabClass}
+                className={`nav-tab ${activeTab === id ? 'active' : ''}`}
               >
                 <Icon className="h-4 w-4" />
                 <span>{label}</span>
