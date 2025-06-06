@@ -219,9 +219,7 @@ const App = () => {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === id ? 'active' : ''
-                }`}
+                className={`nav-tab ${activeTab === id ? 'active' : ''}`}
               >
                 <Icon className="h-4 w-4" />
                 <span>{label}</span>
@@ -651,7 +649,7 @@ const TournamentCard = ({ tournament, members, onEdit, onDelete }) => {
   ).length || 0;
 
   return (
-    <div className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+    <div className="card">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <Award className="h-6 w-6 text-blue-600" />
@@ -735,7 +733,7 @@ const LeagueCard = ({ league, members, onEdit, onDelete }) => {
   ).length || 0;
 
   return (
-    <div className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+    <div className="card">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <Target className="h-6 w-6 text-green-600" />
@@ -818,7 +816,7 @@ const LeagueCard = ({ league, members, onEdit, onDelete }) => {
 
 const MemberCard = ({ member, onEdit, onDelete }) => {
   return (
-    <div className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+    <div className="card">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -1577,11 +1575,8 @@ const MetricCard = ({ title, value, icon: Icon, color }) => {
   return (
     <div className="metric-card">
       <div>
-        <p className="metric-title">{title}</p>
+        <p className="metric-label">{title}</p>
         <p className="metric-value">{value}</p>
-      </div>
-      <div className={`icon-container ${color}`}>
-        <Icon className="h-6 w-6" />
       </div>
     </div>
   );
