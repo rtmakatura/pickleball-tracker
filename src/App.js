@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Users, DollarSign, Calendar, Award, Target, Medal, Plus, Edit, Trash2, Search, Filter, CheckCircle, XCircle, Clock, Mail, Phone, MapPin, Star, TrendingUp } from 'lucide-react';
+import { Trophy, Users, DollarSign, Calendar, Award, Target, Medal, Plus, Edit, Trash2, Search, CheckCircle, XCircle, Clock, Mail, Phone, Star } from 'lucide-react';
 import { db } from './firebase';
 import { 
   collection, 
