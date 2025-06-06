@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Users, DollarSign, Calendar, Search, Plus, Edit, Trash2, MapPin, ExternalLink, Medal, Award, Target, Clock, Phone, Mail, X } from 'lucide-react';
+import { Trophy, Users, DollarSign, Calendar, Award, Target, Medal } from 'lucide-react';
 import { db } from './firebase';
 import { 
   collection, 
@@ -8,9 +8,7 @@ import {
   deleteDoc, 
   doc, 
   onSnapshot,
-  getDocs,
-  query,
-  orderBy 
+  getDocs
 } from 'firebase/firestore';
 
 // Firebase operations
