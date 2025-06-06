@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pickleball-tracker/static/css/main.0046f11b.css",
+    "main.js": "/pickleball-tracker/static/js/main.57ec028a.js",
+    "static/js/453.4848adef.chunk.js": "/pickleball-tracker/static/js/453.4848adef.chunk.js",
+    "index.html": "/pickleball-tracker/index.html",
+    "main.0046f11b.css.map": "/pickleball-tracker/static/css/main.0046f11b.css.map",
+    "main.57ec028a.js.map": "/pickleball-tracker/static/js/main.57ec028a.js.map",
+    "453.4848adef.chunk.js.map": "/pickleball-tracker/static/js/453.4848adef.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0046f11b.css",
+    "static/js/main.57ec028a.js"
+  ]
+}
