@@ -34,8 +34,17 @@ jobs:
         REACT_APP_FIREBASE_APP_ID: ${{ secrets.REACT_APP_FIREBASE_APP_ID }}
         PUBLIC_URL: /pickleball-tracker
     
+    - name: List build contents
+      run: |
+        echo "Build directory contents:"
+        ls -la build/
+        echo "Static JS files:"
+        ls -la build/static/js/
+    
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./build
+        force_orphan: true
+        clean: true
