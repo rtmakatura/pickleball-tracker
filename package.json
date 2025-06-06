@@ -1,7 +1,6 @@
 {
   "name": "pbtrack",
   "homepage": "https://RMakatura.github.io/pickleball-tracker",
-  "homepage": "https://RMakatura.github.io/pickleball-tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
