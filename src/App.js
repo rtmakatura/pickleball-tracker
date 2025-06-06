@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Users, DollarSign, Calendar, Award, Target, Medal, Plus, Edit, Trash2, Search, CheckCircle, XCircle, Clock, Mail, Phone, Star } from 'lucide-react';
 import { db } from './firebase';
+import './premium-styles.css';
 import { 
   collection, 
   addDoc, 
