@@ -8,6 +8,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: linear-gradient(135deg, #dbeafe 0%, #faf5ff 100%);
   min-height: 100vh;
+  color: #333;
 }
 
 .min-h-screen {
@@ -597,14 +598,15 @@ button {
   background: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   transition: all 0.2s ease;
@@ -646,7 +648,8 @@ nav button.active {
   background: white;
   border-radius: 0.75rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Metric card styles */
@@ -661,15 +664,15 @@ nav button.active {
 }
 
 .metric-value {
-  font-size: 1.875rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #111827;
 }
 
 .metric-title {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
-  color: #6b7280;
+  color: #4b5563;
   margin-bottom: 0.5rem;
 }
 
@@ -713,6 +716,15 @@ nav button.active {
 
 .form-input:hover {
   border-color: #9ca3af;
+}
+
+.form-input::placeholder {
+  color: #666;
+}
+
+label {
+  font-weight: 500;
+  color: #333;
 }
 
 /* Modal styles */
@@ -769,6 +781,7 @@ nav button.active {
 @media (min-width: 768px) {
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
   }
   
   .md\:grid-cols-4 {
@@ -1048,6 +1061,7 @@ select.form-input {
   
   body {
     background: white;
+    color: #000;
   }
   
   .card {
