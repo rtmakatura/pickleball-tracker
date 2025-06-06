@@ -219,7 +219,7 @@ const App = () => {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`nav-tab ${activeTab === id ? 'active' : ''}`}
+                className={navTabClass}
               >
                 <Icon className="h-4 w-4" />
                 <span>{label}</span>
@@ -1573,10 +1573,10 @@ const getStatusColor = (status) => {
 
 const MetricCard = ({ title, value, icon: Icon, color }) => {
   return (
-    <div className="metric-card">
+    <div className="metric-card bg-white shadow-md rounded-lg p-4">
       <div>
-        <p className="metric-label">{title}</p>
-        <p className="metric-value">{value}</p>
+        <p className="metric-label text-gray-700 font-medium">{title}</p>
+        <p className="metric-value text-gray-900 font-bold">{value}</p>
       </div>
     </div>
   );
